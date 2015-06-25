@@ -37,7 +37,7 @@ class AchFile(object):
         self.batches = list()
 
     def add_batch(self, std_ent_cls_code, batch_entries=None,
-                  credits=True, debits=False, eff_ent_date=None):
+                  credits=True, debits=False, eff_ent_date=None, entry_desc=None):
         """
         Use this to add batches to the file. For valid std_ent_cls_codes see:
         http://en.wikipedia.org/wiki/Automated_Clearing_House#SEC_codes
@@ -45,7 +45,8 @@ class AchFile(object):
         if batch_entries is None:
             batch_entries = list()
 
-        entry_desc = self.get_entry_desc(std_ent_cls_code)
+        if entry_desc is None:
+            entry_desc = self.get_entry_desc(std_ent_cls_code)
 
         batch_count = len(self.batches) + 1
 
@@ -89,6 +90,7 @@ class AchFile(object):
 
             entry.dfi_acnt_num = record['account_number']
             entry.amount = int(round(float(record['amount']) * 100))
+            entry.id_number = record.get('id_number')
             entry.ind_name = record['name'].upper()[:22]
             entry.trace_num = self.settings['immediate_dest'][:8] \
                 + entry.validate_numeric_field(entry_counter, 7)
