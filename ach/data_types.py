@@ -61,6 +61,8 @@ class Ach(object):
         length: (int)
         """
         str_length = str(length)
+        if field is None:
+            field = ''
 
         match = re.match(r'([\w,\s]{1,' + str_length + '})', field)
 
